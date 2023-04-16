@@ -1,0 +1,88 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="icon" href="{% static 'cake_app/img/icon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'cake_app/css/styles.css' %}">
+</head>
+
+<body>
+<div class="div-for-menu">
+    <div class="div-left-menu">
+        <a class="main-link" href="{% url 'index' %}"><img width="50px" height="40px" src="{% static 'cake_app/img/icon.ico' %}"></a>
+        {% for element in menu %}
+            {% if menu_selected == element.link_name %}
+                <span class="link-for-right-menu">{{ element.link_name }}</span>
+            {% else %}
+                <a class="link-for-right-menu" href="{% url element.url_name %}">{{ element.link_name}}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="div-right-menu">
+        {% if request.user.is_authenticated %}
+            <span>{{ user.username }} </span>|
+            <a href="{% url 'logout' %}">Выход</a>
+        {% else %}
+            {% if menu_selected == 'Войти' %}
+                <span>Войти |</span>
+            {% else %}
+                <a href="{% url 'login' %}">Войти</a>|
+            {% endif %}
+            {% if menu_selected == 'Регистрация' %}
+                <span>Регистрация</span>
+            {% else %}
+                <a href="{% url 'register' %}">Регистрация</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    <div class="right-side-bar">
+        {% for bar in side_bar %}
+            {% if bar_selected == bar.link_name %}
+                <p class="p-for-links">{{ bar.link_name }}</p>
+            {% else %}
+                {% if bar.attrs %}
+                    <p class="p-for-links"><a href="{% url bar.url_name bar.attrs %}">{{ bar.link_name }}</a></p>
+                {% else %}
+                    <p class="p-for-links"><a href="{% url bar.url_name %}">{{ bar.link_name }}</a></p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="div-content">
+        {% block content %}
+        {% endblock %}
+
+        {% if page_obj.has_other_pages %}
+            <div>
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}">&lt; |</a>
+                {% endif %}
+            {% for p in paginator.page_range %}
+                {% if page_obj.number == p %}
+                    <span>{{ p }} |</span>
+                {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                    <a href="?page={{ p }}">{{ p }} |</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+{% block script %}
+{% endblock %}
+
+</div>
+</body>
+</html>

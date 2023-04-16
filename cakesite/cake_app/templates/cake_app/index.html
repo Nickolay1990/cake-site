@@ -1,0 +1,11 @@
+{% extends 'cake_app/base.html' %}
+
+{% block content %}
+<h1 class="title-string">{{ title }}</h1>
+    {% for cake in cakes %}
+<div class="div-for-cake">
+            <p class="p-for-cake"><a href="{{ cake.get_absolute_url }}">{{ cake }}</a></p>
+            <a class="a-for-img-cake" href="{{ cake.get_absolute_url }}"><img class="img-for-cake" src="{{ cake.photo.url }}"></a>
+        </div>
+    {% endfor %}
+{% endblock %}

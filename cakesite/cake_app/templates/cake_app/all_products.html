@@ -1,0 +1,18 @@
+{% extends 'cake_app/base.html' %}
+
+{% block content %}
+<h1 class="title-string">{{ title }}</h1>
+<ol class="ol-of-products">
+    {% for product in products %}
+        {% if forloop.first %}
+            {% if page_obj.number == 1 %}
+                <li class="li-of-products">{{ product }} - {{ product.price }} грн</li>
+            {% else %}
+                <li class="li-of-products" value="{{page_obj.number|add:-1}}01">{{ product }} - {{ product.price }} грн</li>
+            {% endif %}
+        {% else %}
+            <li class="li-of-products">{{ product }} - {{ product.price }} грн</li>
+        {% endif %}
+    {% endfor %}
+</ol>
+{% endblock %}
