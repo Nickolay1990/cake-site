@@ -1,2 +1,4 @@
 LeraENV/
 .idea/
+db.sqlite3
+*.pyc
