@@ -9,6 +9,8 @@
     <p class="form-p-input"><label class="form-label" for="{{  f.id_for_label  }}">{{ f.label }}</label>{{ f }}</p>
     <div class="div-form-error">{{ f.errors }}</div>
     {% endfor %}
-    <button class="submit-button" type="submit">Войти</button>
+    <div class="div-for-register-or-login-button">
+        <button class="submit-button" type="submit">Войти</button>
+    </div>
 </form>
 {% endblock %}
