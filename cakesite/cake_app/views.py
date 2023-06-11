@@ -1,12 +1,11 @@
 from django.contrib.auth import logout, login
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponseNotFound
-from django.shortcuts import redirect
+from django.http import HttpResponseNotFound, HttpResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, FormView
+from django.views.generic import ListView, CreateView, FormView, DetailView, UpdateView
 from cake_app.utils import *
 from .forms import *
-from django.db.models import Sum
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -33,7 +32,7 @@ class OnlyCakeListView(DataMixin, ListView):
         context = super().get_context_data(**kwargs)
         if self.kwargs['type'] == 1:
             context_mixin = self.get_user_data(bar_selected='Только торты',
-                                           title='Торты')
+                                               title='Торты')
         elif self.kwargs['type'] == 2:
             context_mixin = self.get_user_data(bar_selected='Только пироженое',
                                                title='Пироженое')
@@ -51,40 +50,28 @@ class OnlyCakeListView(DataMixin, ListView):
         return queryset
 
 
-class CakeDetailsView(DataMixin, ListView):
-    model = TechCard
+class CakeDetailsView(DataMixin, DetailView):
+    model = Cake
     template_name = 'cake_app/one_cake.html'
-    context_object_name = 'records'
     diameter = {14: 0.765, 16: 1, 18: 1.2656, 20: 1.56}
-
-    def get_queryset(self):
-        query_set = TechCard.objects.filter(
-            model_cake__slug=self.kwargs['slug'])
-        records = create_data_list(query_set=query_set,
-                                   size=self.diameter[self.kwargs['size']])
-        return records
-
-    def get_sum_of_quantity(self):
-        quantity_sum = TechCard.objects.filter(
-            model_cake__slug=self.kwargs['slug']).aggregate(
-            sum=Sum('quantity'))
-        return quantity_sum['sum']
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        if self.get_sum_of_quantity() != None:
+        cake = Cake.objects.get(slug=self.kwargs['slug'])
+        try:
+            techcard_list = get_techcard_list(cake.techcard, self.diameter[self.kwargs['size']])
+        except:
             context_mixin = self.get_user_data(size=self.kwargs['size'],
                                                diameter=self.diameter,
                                                title=Cake.objects.get(
-                                                   slug=self.kwargs['slug']),
-                                               sum_of_quantity=round(
-                                                   self.get_sum_of_quantity() *
-                                                   self.diameter[
-                                                       self.kwargs['size']],
-                                                   2))
-        else:
-            context_mixin = self.get_user_data(
-                title='Техкарты по данному торту отсутствуют')
+                                                   slug=cake.slug),
+                                               techcard_list=None)
+            return dict(list(context.items()) + list(context_mixin.items()))
+        context_mixin = self.get_user_data(size=self.kwargs['size'],
+                                           diameter=self.diameter,
+                                           title=Cake.objects.get(
+                                               slug=cake.slug),
+                                           techcard_list=techcard_list)
         return dict(list(context.items()) + list(context_mixin.items()))
 
 
@@ -100,14 +87,28 @@ class ProductsListView(DataMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context_mixin = self.get_user_data(title='Все продукты',
-                                           bar_selected='Все продукты')
+                                           bar_selected='Все продукты',
+                                           link_name='all_products'
+                                           )
         return dict(list(context.items()) + list(context_mixin.items()))
+
+    def post(self, request):
+        if self.request.user.username == 'admin':
+            data = list(request.POST.items())[1]
+            product = Product.objects.get(name=data[0])
+            if data[1]:
+                product.price = round(float(data[1]), 2)
+                product.save()
+            else:
+                product.delete()
+            return redirect('all_products')
+        return HttpResponseNotFound('Только администратор может изменять или удалять продукты.')
 
 
 class AddProductView(LoginRequiredMixin, DataMixin, CreateView):
     form_class = AddProductForm
     template_name = 'cake_app/add_element.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('all_products')
     login_url = HttpResponseNotFound()
 
     def get_context_data(self, **kwargs):
@@ -122,7 +123,7 @@ class AddProductView(LoginRequiredMixin, DataMixin, CreateView):
             form.save()
         else:
             return HttpResponseNotFound('Only admin can to add post')
-        return redirect('index')
+        return redirect('all_products')
 
 
 class AddCakeView(LoginRequiredMixin, DataMixin, CreateView):
@@ -136,35 +137,26 @@ class AddCakeView(LoginRequiredMixin, DataMixin, CreateView):
         context_mixin = self.get_user_data(title='Добавление торта',
                                            link_name='add_cake',
                                            bar_selected='Добавить торт')
-        return dict(list(context.items()) + list(context_mixin.items()))
+        products = Product.objects.all()
+        query_products = {'products': products}
+        return dict(list(context.items()) + list(context_mixin.items()) + list(query_products.items()))
 
     def form_valid(self, form):
-        if self.request.user.username == 'admin':
-            form.save()
+        dict_form = dict(form.data)
+        try:
+            json = create_json(dict_form['product'], dict_form['quantity'])
+        except:
+            form.add_error('type', 'Количество не может быть равно или меньше 0')
+        if form.is_valid():
+            if self.request.user.username == 'admin':
+                form.save(json)
+                return redirect('index')
+            else:
+                return HttpResponseNotFound('Только администратор может добавлять данные')
         else:
-            return HttpResponseNotFound('Only admin can to add post')
-        return redirect('index')
-
-
-class AddTechCardView(LoginRequiredMixin, DataMixin, CreateView):
-    form_class = AddTechCardForm
-    template_name = 'cake_app/add_element.html'
-    success_url = reverse_lazy('add_techcard')
-    login_url = HttpResponseNotFound()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context_mixin = self.get_user_data(title='Добавление тех-карты',
-                                           link_name='add_techcard',
-                                           bar_selected='Добавить тех-карту')
-        return dict(list(context.items()) + list(context_mixin.items()))
-
-    def form_valid(self, form):
-        if self.request.user.username == 'admin':
-            form.save()
-        else:
-            return HttpResponseNotFound('Only admin can to add post')
-        return redirect('add_techcard')
+            context = self.get_context_data()
+            context['form'] = form
+            return render(self.request, 'cake_app/add_element.html', context)
 
 
 class RegisterView(DataMixin, CreateView):
@@ -228,3 +220,44 @@ def logout_user(request):
     logout(request)
     return redirect('index')
 
+
+class CakeUpdateView(DataMixin, UpdateView):
+    model = Cake
+    form_class = CakeUpdateForm
+    template_name = 'cake_app/change_techcard.html'
+    context_object_name = 'cake'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context_mixin = self.get_user_data(title='Изменить техкарту',
+                                           link_name='change_techcard')
+        techcard = context['cake'].techcard[0]
+        techcard_context = {'techcard': list(techcard.values())}
+        products = Product.objects.all()
+        query_products = {'products': products}
+        return dict(list(context.items()) + list(context_mixin.items()) + list(techcard_context.items()) + list(
+            query_products.items()))
+
+    def form_valid(self, form):
+        dict_form = dict(form.data)
+        try:
+            json = create_json(dict_form['product'], dict_form['quantity'])
+        except:
+            form.add_error('type', 'Количество не может быть равно 0 или меньше')
+        if form.is_valid():
+            if self.request.user.username == 'admin':
+                form.save(json)
+                cake = Cake.objects.get(name=form.data['name'])
+                return redirect(cake)
+            else:
+                return HttpResponseNotFound('Только администратор может вносить изменения')
+        else:
+            context = self.get_context_data()
+            context['form'] = form
+            return render(self.request, 'cake_app/change_techcard.html', context)
+
+
+def delete_cake(request, slug):
+    cake = Cake.objects.get(slug=slug)
+    cake.delete()
+    return redirect('index')

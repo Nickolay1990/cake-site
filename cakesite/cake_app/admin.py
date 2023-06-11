@@ -13,9 +13,3 @@ class CakeAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price']
     list_editable = ['price']
-
-
-@admin.register(TechCard)
-class TechCardAdmin(admin.ModelAdmin):
-    list_display = ['model_cake', 'model_product', 'quantity']
-    list_editable = ['quantity']

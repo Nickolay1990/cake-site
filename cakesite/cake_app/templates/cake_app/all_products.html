@@ -1,18 +1,75 @@
 {% extends 'cake_app/base.html' %}
+{% load static %}
 
 {% block content %}
 <h1 class="title-string">{{ title }}</h1>
+<p>Цены указаны в гривнах</p>
 <ol class="ol-of-products">
     {% for product in products %}
         {% if forloop.first %}
             {% if page_obj.number == 1 %}
-                <li class="li-of-products">{{ product }} - {{ product.price }} грн</li>
+                <div class="div-for-li">
+                    <li class="li-of-products">
+                        {{ product }} - {{ product.price }}
+                    </li>
+                    {% if request.user.username == 'admin' %}
+                        <button class="hidden-button" type="button">Изменить</button>
+                    {% endif %}
+                </div>
+                {% if request.user.username == 'admin' %}
+                    <div class="hidden-div" hidden="true">
+                        <form action="{% url link_name %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input class="hidden-input" name="{{ product }}" min="0.01" type="number" step="any" required>
+                            <button type="submit">Сохранить</button>
+                            <button class="delete-product" type="submit">Удалить</button>
+                        </form>
+                    </div>
+                {% endif %}
             {% else %}
-                <li class="li-of-products" value="{{page_obj.number|add:-1}}01">{{ product }} - {{ product.price }} грн</li>
+                <div class="div-for-li">
+                    <li class="li-of-products" value="{{page_obj.number|add:-1}}01">
+                        {{ product }} - {{ product.price }}
+                    </li>
+                    {% if request.user.username == 'admin' %}
+                        <button class="hidden-button" type="button">Изменить</button>
+                    {% endif %}
+                </div>
+                {% if request.user.username == 'admin' %}
+                    <div class="hidden-div" hidden="true">
+                        <form action="{% url link_name %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input class="hidden-input" name="{{ product }}" min="0.01" type="number" step="any" required>
+                            <button type="submit">Сохранить</button>
+                            <button class="delete-product" type="submit">Удалить</button>
+                        </form>
+                    </div>
+                {% endif %}
             {% endif %}
         {% else %}
-            <li class="li-of-products">{{ product }} - {{ product.price }} грн</li>
+            <div class="div-for-li">
+                <li class="li-of-products">
+                    {{ product }} - {{ product.price }}
+                </li>
+                {% if request.user.username == 'admin' %}
+                    <button class="hidden-button" type="button">Изменить</button>
+                {% endif %}
+            </div>
+            {% if request.user.username == 'admin' %}
+                <div class="hidden-div" hidden="true">
+                    <form action="{% url link_name %}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input class="hidden-input" name="{{ product }}" min="0.01" type="number" step="any" required>
+                        <button type="submit">Сохранить</button>
+                        <button class="delete-product" type="submit">Удалить</button>
+                    </form>
+                </div>
+            {% endif %}
         {% endif %}
     {% endfor %}
 </ol>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'cake_app/js/change_price.js' %}"></script>
 {% endblock %}

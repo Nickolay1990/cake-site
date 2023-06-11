@@ -1,17 +1,16 @@
-def create_data_list(query_set, size):
-    general_data_list = []
-    number = 1
-    for i in query_set:
-        local_data_list = []
-        local_data_list.append(f'{number}. {i.model_product}')
-        number += 1
-        all_quantity = i.quantity * size
-        local_data_list.append(round(all_quantity, 3))
-        local_data_list.append(i.model_product.price)
-        all_price = i.model_product.price * all_quantity
-        local_data_list.append(round(all_price, 2))
-        general_data_list.append(local_data_list)
-    return general_data_list
+from cake_app.models import Product
+
+
+def get_techcard_list(json_string, size):
+    final_data = []
+    for value in json_string[0].values():
+        name = value['name']
+        quantity = round(float(value['quantity']) * size, 2)
+        price = Product.objects.get(name=name).price
+        sum_of_price = round(quantity * price, 2)
+        temp_data = [name, quantity, price, sum_of_price]
+        final_data.append(temp_data)
+    return final_data
 
 
 side_bar_admin = [
@@ -21,7 +20,6 @@ side_bar_admin = [
     {'link_name': 'Все продукты', 'url_name': 'all_products'},
     {'link_name': 'Добавить продукт', 'url_name': 'add_product'},
     {'link_name': 'Добавить торт', 'url_name': 'add_cake'},
-    {'link_name': 'Добавить тех-карту', 'url_name': 'add_techcard'},
 ]
 
 side_bar_user = [
@@ -48,3 +46,15 @@ class DataMixin:
         if 'menu_selected' not in context_mixin:
             context_mixin['menu_selected'] = 0
         return context_mixin
+
+
+def create_json(products, quantity):
+    final_dict = {}
+    number = 1
+    for key, value in zip(products, quantity):
+        if float(value) <= 0:
+            raise ValueError('Количество не может быть меньше 0*')
+        new_dict = {f'product {number}': {'name': key, 'quantity': value}}
+        number += 1
+        final_dict.update(new_dict)
+    return final_dict

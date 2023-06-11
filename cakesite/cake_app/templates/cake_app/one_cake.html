@@ -3,48 +3,57 @@
 
 
 {% block content %}
-<h1 class="title-string">{{ title }}</h1>
-{% if title.type == '1' %}
-    {% for number in diameter %}
-        {% if number == size %}
-            <span class="span-for-diameter">диаметр - {{ number }}см</span>
-        {% else %}
-            <a class="link-for-diameter" href="{% url 'show_one_cake' slug=title.slug size=number %}">диаметр - {{ number }}см</a>
-        {% endif %}
-    {% endfor %}
+    <h1 class="title-string">{{ title }}</h1>
+    {% if title.type == '1' %}
+        {% for number in diameter %}
+            {% if number == size %}
+                <span class="span-for-diameter">диаметр - {{ number }}см</span>
+            {% else %}
+                <a class="link-for-diameter" href="{% url 'show_one_cake' slug=title.slug size=number %}">диаметр - {{ number }}см</a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% if techcard_list %}
+    <table class="table-for-one-cake">
+        <caption class="caption-for-table-cake">
+            {% if title.type == '1' %}
+                {{ title }} (диаметр выпечки {{ size }}см)
+            {% else %}
+                {{ title }} (раскладка на 1 шт.)
+            {% endif %}
+        </caption>
+        <tr class="tr-for-table-cake">
+            <th class="th-for-table-cake">Продукт</th>
+            <th class="th-for-table-cake">Количество</th>
+            <th class="th-for-table-cake">Цена продукта за 1кг</th>
+            <th class="th-for-table-cake">Сумма за количество</th>
+        </tr>
+        {% for techcard in techcard_list %}
+            <tr class="tr-for-table-cake">
+                {% for data in techcard %}
+                    {% if not forloop.last %}
+                        <td class="td-for-table-cake">{{ data }}</td>
+                    {% else %}
+                        <td class="total">{{ data }}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        <tr class="tr-for-table-cake">
+            <th colspan="2" class="th-for-table-cake">Вес: {{ sum_of_quantity }}кг</th>
+            <th class="sum" colspan="2">Закупка: </th>
+        </tr>
+    </table>
+<a href="{% url 'change_techcard' slug=title.slug %}">Изменить техкарту</a>
+<a id="delete-link" href="{% url 'delete_cake' slug=title.slug %}">Удалить торт</a>
+
+    <p class="description">{{ title.description }}</p>
+    <img class="img-for-cake-2" src="{{ cake.photo.url }}">
+{% else %}
+    <p>Невозможно отобразить техкарту. Она была удалена, или были удалены ее элементы</p>
 {% endif %}
 
-<table class="table-for-one-cake">
-    <caption class="caption-for-table-cake">
-        {% if title.type == '1' %}
-            {{ title }} (диаметр выпечки {{ size }}см)
-        {% else %}
-            {{ title }} (раскладка на 1 шт.)
-        {% endif %}
-    </caption>
-    <tr class="tr-for-table-cake">
-        <th class="th-for-table-cake">Продукт</th>
-        <th class="th-for-table-cake">Количество</th>
-        <th class="th-for-table-cake">Цена продукта за 1кг</th>
-        <th class="th-for-table-cake">Сумма за количество</th>
-    </tr>
-    {% for record in records %}
-        <tr class="tr-for-table-cake">
-            {% for data in record %}
-                {% if not forloop.last %}
-                    <td class="td-for-table-cake">{{ data }}</td>
-                {% else %}
-                    <td class="total">{{ data }}</td>
-                {% endif %}
-            {% endfor %}
-        </tr>
-    {% endfor %}
-    <tr class="tr-for-table-cake">
-        <th colspan="2" class="th-for-table-cake">Вес: {{ sum_of_quantity }}кг</th>
-        <th class="sum" colspan="2">Закупка: </th>
-    </tr>
-</table>
-<p class="description">{{ title.description }}</p>
 {% endblock %}
 
 {% block script %}

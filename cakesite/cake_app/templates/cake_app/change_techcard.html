@@ -1,0 +1,43 @@
+{% extends 'cake_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<h1 class="title-string">{{ title }}</h1>
+
+<form class="form-general" action="{% url link_name slug=cake.slug %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for f in form %}
+    {% if f.label == 'Картинка' %}
+    <p class="form-p-input1"><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+    <div class="div-form-error">{{ f.errors }}</div>
+    {% else %}
+    <p class="form-p-input"><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}: </label>{{ f }}</p>
+    <div class="div-form-error">{{ f.errors }}</div>
+    {% endif %}
+    {% endfor %}
+    <div class="div-with-p">
+    {% for t in techcard %}
+        <p class="p-for-form">
+            <label class="label-for-input" for="product">продукт </label>
+            <select class="select-for-product" name="product" required>
+                <option value="{{ t.name }}" selected>{{ t.name }}</option>
+                {% for p in products %}
+                <option value="{{ p.name }}">{{ p.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="number" step="any" name="quantity" required class="input-quantity" min="0.001"
+                   value="{{ t.quantity }}">
+            <button class="delete-button" type="button">Убрать</button>
+        </p>
+    {% endfor %}
+    </div>
+    <div class="div-for-buttons">
+        <button class="add-button" type="button">Добавить</button>
+        <button class="save-button" type="submit">Сохранить</button>
+    </div>
+</form>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'cake_app/js/script_change_cake.js' %}"></script>
+{% endblock %}

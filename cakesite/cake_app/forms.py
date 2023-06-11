@@ -20,14 +20,14 @@ class AddProductForm(forms.ModelForm):
     def clean_price(self):
         price = self.cleaned_data['price']
         if price <= 0:
-            raise ValidationError('Цена не может быть меньше 0')
+            raise ValidationError('Цена не может быть меньше или равна 0')
         return price
 
 
 class AddCakeForm(forms.ModelForm):
     class Meta:
         model = Cake
-        fields = '__all__'
+        fields = ['name', 'description', 'photo', 'type']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-input-cake-name'}),
             'slug': forms.TextInput(attrs={'class': 'form-input-cake-slug'}),
@@ -36,19 +36,21 @@ class AddCakeForm(forms.ModelForm):
             'photo': forms.FileInput(attrs={'class': 'form-input-cake-photo'}),
         }
 
+    def save(self, *args, **kwargs):
+        super(AddCakeForm, self).save(*args, **kwargs)
+        self.instance.techcard = args
+        super(AddCakeForm, self).save(*args, **kwargs)
 
-class AddTechCardForm(forms.ModelForm):
+
+class CakeUpdateForm(forms.ModelForm):
     class Meta:
-        model = TechCard
-        fields = '__all__'
-        widgets = {'quantity': forms.NumberInput(
-            attrs={'class': 'form-input-techcard-quantity'})}
+        model = Cake
+        fields = ['name', 'description', 'photo', 'type']
 
-    def clean_quantity(self):
-        quantity = self.cleaned_data['quantity']
-        if quantity <= 0:
-            raise ValidationError('Количество не может быть меньше 0')
-        return quantity
+    def save(self, *args, **kwargs):
+        super(CakeUpdateForm, self).save(*args, **kwargs)
+        self.instance.techcard = args
+        super(CakeUpdateForm, self).save(*args, **kwargs)
 
 
 class RegisterForm(UserCreationForm):

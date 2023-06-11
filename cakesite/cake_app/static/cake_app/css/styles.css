@@ -45,6 +45,12 @@ a {
     text-decoration: none;
 }
 
+li {
+    width: 300px;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .div-for-menu{
     background-color: brown;
     height: 60px;
@@ -137,6 +143,13 @@ tr:hover td{
      border-radius: 15px;
 }
 
+.img-for-cake-2{
+     width: 1200px;
+     height: auto;
+     border: 1px solid white;
+     border-radius: 15px;
+}
+
 .p-for-cake{
     font-size: 40px;
      width: 500px;
@@ -214,4 +227,41 @@ tr:hover td{
 .div-for-register-or-login-button{
     display: flex;
     justify-content: center;
+}
+
+.hidden-button {
+    width: 77px;
+}
+
+.hidden-input {
+    width: 100px;
+}
+
+.div-for-li {
+    display: flex;
+    align-items: center;
+}
+
+.delete-product {
+    background-color: red;
+}
+
+.add-button {
+    margin: 5px;
+}
+
+.clear-button {
+    margin: 5px;
+}
+
+.save-button{
+    margin: 5px;
+}
+
+.submit-button{
+    margin: 5px;
+}
+
+#delete-link{
+    color: brown;
 }
