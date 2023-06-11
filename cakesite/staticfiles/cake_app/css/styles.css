@@ -1,0 +1,267 @@
+html, body {
+	font-size: 24px;
+	font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+	background-color: yellow;
+	margin: 0px;
+}
+
+button{
+    border-top: 3px solid aqua;
+    border-left: 3px solid aqua;
+    border-radius: 4px;
+    }
+
+input, textarea{
+    border-radius: 4px;
+}
+
+tr, td {
+    width: 150px;
+    text-align: center;
+}
+
+th{
+    border-right: 1px solid red;
+    border-left: 1px solid red;
+    border-bottom: 1px solid red;
+    padding: 8px;
+}
+
+td{
+    border-right: 1px solid red;
+    border-left: 1px solid red;
+    border-bottom: 1px solid red;
+    padding: 8px;
+}
+
+table{
+    border-collapse: collapse;
+    border-top: 7px solid red;
+    border-bottom: 7px solid red;
+    background-color: orange;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    width: 300px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.div-for-menu{
+    background-color: brown;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.div-left-menu{
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.main-link{
+    width: 100px;
+}
+
+.link-for-right-menu{
+    width: 200px;
+}
+
+.div-right-menu{
+    display: flex;
+    align-items: center;
+    width: 290px;
+    justify-content: space-around;
+    margin-right: 40px;
+}
+
+.div-content{
+    width: 100%;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-side-bar{
+    background-color: gray;
+    width: 180px;
+    display: block;
+    min-height: 1000px;
+    height: auto;
+    text-align: center;
+}
+
+.p-for-links{
+    width: 180px;
+    box-shadow: -3px 1px 1px black, -3px -1px 6px black;
+}
+
+a:link{
+    color: orange
+}
+
+a:visited{
+    color: orange;
+}
+
+a:hover{
+    color: red;
+}
+
+tr:hover td{
+    background-color: red;
+}
+
+::selection{
+    background-color: black;
+    color: orange;
+}
+
+.div-for-cake{
+    height: 200px;
+    width: 800px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    justify-content: space-around;;
+}
+
+.a-for-img-cake{
+    height: 200px;
+}
+
+.img-for-cake{
+     width: 300px;
+     height: 200px;
+     border: 1px solid white;
+     border-radius: 15px;
+}
+
+.img-for-cake-2{
+     width: 1200px;
+     height: auto;
+     border: 1px solid white;
+     border-radius: 15px;
+}
+
+.p-for-cake{
+    font-size: 40px;
+     width: 500px;
+     text-align: center;
+}
+
+.container{
+    display: flex;
+}
+
+.title-string{
+    text-align: center;
+    text-shadow: 4px 4px 7px blue;
+}
+
+.p-about{
+    text-align: justify;
+}
+
+.form-general{
+    width: auto;
+    border-top: 3px solid orange;
+    border-left: 3px solid orange;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+    background-color: brown;
+    border-radius: 7px;
+    font-size: 20px;
+}
+
+.form-p-input{
+    display: flex;
+    align-items: center;
+}
+
+.form-input-product-name{
+    width: 300px;
+    }
+
+.form-input-product-price{
+    width: 100px;
+}
+
+.form-label{
+    width: 190px;
+    text-align: center;
+}
+
+.div-for-buttons{
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: space-around;
+    width: 230px;
+}
+
+.div-form-error{
+    font-size: 15px;
+    color: red;
+}
+
+.form-input-cake-name{
+    width: 300px;
+}
+
+.form-input-cake-slug{
+    width: 300px;
+}
+
+.form-input-techcard-quantity{
+    width: 100px;
+}
+
+.div-for-register-or-login-button{
+    display: flex;
+    justify-content: center;
+}
+
+.hidden-button {
+    width: 77px;
+}
+
+.hidden-input {
+    width: 100px;
+}
+
+.div-for-li {
+    display: flex;
+    align-items: center;
+}
+
+.delete-product {
+    background-color: red;
+}
+
+.add-button {
+    margin: 5px;
+}
+
+.clear-button {
+    margin: 5px;
+}
+
+.save-button{
+    margin: 5px;
+}
+
+.submit-button{
+    margin: 5px;
+}
+
+#delete-link{
+    color: brown;
+}
