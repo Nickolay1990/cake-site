@@ -44,18 +44,4 @@ class Product(models.Model):
         return f'{self.name}'
 
 
-class TechCard(models.Model):
-    model_cake = models.ForeignKey(Cake, on_delete=models.SET_NULL, null=True,
-                                   verbose_name='торт', related_name='techcards')
-    model_product = models.ForeignKey(Product, on_delete=models.SET_NULL,
-                                      null=True,
-                                      verbose_name='продукт', related_name='techcards')
-    quantity = models.FloatField(verbose_name='количество')
 
-    class Meta:
-        verbose_name = 'Тех-карта'
-        verbose_name_plural = 'Тех-карты'
-        ordering = ['model_cake']
-
-    def __str__(self):
-        return f'{self.model_cake} - {self.model_product}'
