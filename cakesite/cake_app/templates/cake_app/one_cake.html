@@ -53,6 +53,10 @@
     <img class="img-for-cake-2" src="{{ cake.photo.url }}">
 {% else %}
     <p>Невозможно отобразить техкарту. Она была удалена, или были удалены ее элементы</p>
+    {% if request.user.username == 'admin' %}
+            <a href="{% url 'change_techcard' slug=title.slug %}">Изменить техкарту</a>
+            <a id="delete-link" href="{% url 'delete_cake' slug=title.slug %}">Удалить торт</a>
+        {% endif %}
 {% endif %}
 {% endblock %}
 
