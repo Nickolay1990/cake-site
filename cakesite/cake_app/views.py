@@ -123,7 +123,7 @@ class AddProductView(LoginRequiredMixin, DataMixin, CreateView):
             form.save()
         else:
             return HttpResponseNotFound('Only admin can to add post')
-        return redirect('all_products')
+        return redirect('add_product')
 
 
 class AddCakeView(LoginRequiredMixin, DataMixin, CreateView):
