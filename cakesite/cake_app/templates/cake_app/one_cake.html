@@ -45,15 +45,15 @@
             <th class="sum" colspan="2">Закупка: </th>
         </tr>
     </table>
-<a href="{% url 'change_techcard' slug=title.slug %}">Изменить техкарту</a>
-<a id="delete-link" href="{% url 'delete_cake' slug=title.slug %}">Удалить торт</a>
-
+    {% if request.user.username == 'admin' %}
+        <a href="{% url 'change_techcard' slug=title.slug %}">Изменить техкарту</a>
+        <a id="delete-link" href="{% url 'delete_cake' slug=title.slug %}">Удалить торт</a>
+    {% endif %}
     <p class="description">{{ title.description }}</p>
     <img class="img-for-cake-2" src="{{ cake.photo.url }}">
 {% else %}
     <p>Невозможно отобразить техкарту. Она была удалена, или были удалены ее элементы</p>
 {% endif %}
-
 {% endblock %}
 
 {% block script %}

@@ -258,6 +258,9 @@ class CakeUpdateView(DataMixin, UpdateView):
 
 
 def delete_cake(request, slug):
-    cake = Cake.objects.get(slug=slug)
-    cake.delete()
-    return redirect('index')
+    if request.user.username == 'admin':
+        cake = Cake.objects.get(slug=slug)
+        cake.delete()
+        return redirect('index')
+    else:
+        return HttpResponseNotFound('Только администратор может удалять данные')
