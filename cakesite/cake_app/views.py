@@ -62,16 +62,17 @@ class CakeDetailsView(DataMixin, DetailView):
             techcard_list = get_techcard_list(cake.techcard, self.diameter[self.kwargs['size']])
         except:
             context_mixin = self.get_user_data(size=self.kwargs['size'],
-                                               diameter=self.diameter,
                                                title=Cake.objects.get(
                                                    slug=cake.slug),
                                                techcard_list=None)
             return dict(list(context.items()) + list(context_mixin.items()))
+        sum_of_quantity = get_sum_of_quantity(techcard_list)
         context_mixin = self.get_user_data(size=self.kwargs['size'],
                                            diameter=self.diameter,
                                            title=Cake.objects.get(
                                                slug=cake.slug),
-                                           techcard_list=techcard_list)
+                                           techcard_list=techcard_list,
+                                           sum_of_quantity=sum_of_quantity)
         return dict(list(context.items()) + list(context_mixin.items()))
 
 

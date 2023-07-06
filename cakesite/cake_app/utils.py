@@ -58,3 +58,10 @@ def create_json(products, quantity):
         number += 1
         final_dict.update(new_dict)
     return final_dict
+
+
+def get_sum_of_quantity(techcard_list):
+    sum_of_quantity = 0
+    for element in techcard_list:
+        sum_of_quantity += element[1]
+    return round(sum_of_quantity, 2)
